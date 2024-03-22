@@ -99,15 +99,14 @@ class MaterialEntry: ResourceEntry<SwiftGodot.Material, RealityKit.Material> {
                 //
                 // ALBEDO (base color)
                 //
-                if let albedoTexture = stdMat.albedoTexture {
+                if stdMat.transparency == .alpha {
+                    rkMat.blending = .transparent(opacity: .init(floatLiteral: stdMat.albedoColor.alpha))
+                }
+
+                if let albedoTexture = stdMat.albedoTexture {                        
                     rkMat.baseColor = .init(tint: uiColor(forGodotColor: stdMat.albedoColor), texture: .init(resourceCache.rkTexture(forGodotTexture: albedoTexture)))
                 } else {
-                    if stdMat.transparency == .alpha {
-                        rkMat.baseColor = .init(tint: uiColor(forGodotColor: stdMat.albedoColor).withAlphaComponent(1.0))
-                        rkMat.blending = .transparent(opacity: .init(floatLiteral: stdMat.albedoColor.alpha))
-                    } else {
-                        rkMat.baseColor = .init(tint: uiColor(forGodotColor: stdMat.albedoColor))
-                    }
+                    rkMat.baseColor = .init(tint: uiColor(forGodotColor: stdMat.albedoColor))
                 }
                 
                 rkMat.metallic = PhysicallyBasedMaterial.Metallic(floatLiteral: Float(stdMat.metallic))
